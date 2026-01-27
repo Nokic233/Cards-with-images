@@ -60,7 +60,7 @@ function Cards({ category, data, from = 0, len = Math.PI * 2, radius = 5.25, onP
             rotation={[0, Math.PI / 2 + angle, 0]}
             active={hovered !== null}
             hovered={hovered === i}
-            url={`/img${Math.floor(i % 10) + 1}.jpg`}
+            url={`${import.meta.env.BASE_URL}img${Math.floor(i % 10) + 1}.jpg`}
           />
         )
       })}
@@ -95,7 +95,14 @@ function ActiveCard({ hovered, ...props }) {
       <Text font={suspend(inter).default} fontSize={0.5} position={[2.15, 3.85, 0]} anchorX="left" color="black">
         {hovered !== null && `${name}\n${hovered}`}
       </Text>
-      <Image ref={ref} transparent radius={0.3} position={[0, 1.5, 0]} scale={[3.5, 1.618 * 3.5, 0.2, 1]} url={`/img${Math.floor(hovered % 10) + 1}.jpg`} />
+      <Image
+        ref={ref}
+        transparent
+        radius={0.3}
+        position={[0, 1.5, 0]}
+        scale={[3.5, 1.618 * 3.5, 0.2, 1]}
+        url={`${import.meta.env.BASE_URL}img${Math.floor(hovered % 10) + 1}.jpg`}
+      />
     </Billboard>
   )
 }
