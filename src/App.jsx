@@ -9,6 +9,9 @@ import { easing, geometry } from 'maath'
 extend(geometry)
 const inter = import('@pmndrs/assets/fonts/inter_regular.woff')
 
+// 图片文件名列表，添加新图片时只需在这里添加文件名
+const images = ['img1.jpg', 'img2.jpg', 'img3.jpg', 'img4.jpg', 'img5.jpg', 'img6.jpg', 'img7.jpg', 'img8.jpg', 'img9.jpg', 'img10.jpg']
+
 export const App = () => (
   <Canvas dpr={[1, 1.5]}>
     <ScrollControls pages={4} infinite>
@@ -51,16 +54,17 @@ function Cards({ category, data, from = 0, len = Math.PI * 2, radius = 5.25, onP
       </Billboard>
       {Array.from({ length: amount - 3 /* minus 3 images at the end, creates a gap */ }, (_, i) => {
         const angle = from + (i / amount) * len
+        const imageFile = images[i % images.length]
         return (
           <Card
             key={angle}
-            onPointerOver={(e) => (e.stopPropagation(), hover(i), onPointerOver(i))}
+            onPointerOver={(e) => (e.stopPropagation(), hover(i), onPointerOver(imageFile))}
             onPointerOut={() => (hover(null), onPointerOut(null))}
             position={[Math.sin(angle) * radius, 0, Math.cos(angle) * radius]}
             rotation={[0, Math.PI / 2 + angle, 0]}
             active={hovered !== null}
             hovered={hovered === i}
-            url={`${import.meta.env.BASE_URL}img${Math.floor(i % 10) + 1}.jpg`}
+            url={`${import.meta.env.BASE_URL}${imageFile}`}
           />
         )
       })}
@@ -85,6 +89,8 @@ function Card({ url, active, hovered, ...props }) {
 function ActiveCard({ hovered, ...props }) {
   const ref = useRef()
   const name = useMemo(() => generate({ exactly: 2 }).join(' '), [hovered])
+  // 使用默认图片避免 null 错误
+  const imageUrl = `${import.meta.env.BASE_URL}${hovered || images[0]}`
   useLayoutEffect(() => void (ref.current.material.zoom = 0.8), [hovered])
   useFrame((state, delta) => {
     easing.damp(ref.current.material, 'zoom', 1, 0.5, delta)
@@ -95,14 +101,7 @@ function ActiveCard({ hovered, ...props }) {
       <Text font={suspend(inter).default} fontSize={0.5} position={[2.15, 3.85, 0]} anchorX="left" color="black">
         {hovered !== null && `${name}\n${hovered}`}
       </Text>
-      <Image
-        ref={ref}
-        transparent
-        radius={0.3}
-        position={[0, 1.5, 0]}
-        scale={[3.5, 1.618 * 3.5, 0.2, 1]}
-        url={`${import.meta.env.BASE_URL}img${Math.floor(hovered % 10) + 1}.jpg`}
-      />
+      <Image ref={ref} transparent radius={0.3} position={[0, 1.5, 0]} scale={[3.5, 1.618 * 3.5, 0.2, 1]} url={imageUrl} />
     </Billboard>
   )
 }
