@@ -10,7 +10,7 @@ extend(geometry)
 const inter = import('@pmndrs/assets/fonts/inter_regular.woff')
 
 // 从 src/assets 动态加载所有图片
-const imageModules = import.meta.glob('./assets/*.jpg', { eager: true, as: 'url' })
+const imageModules = import.meta.glob('./assets/*.{jpg,png}', { eager: true, query: '?url', import: 'default' })
 const images = Object.values(imageModules)
 
 export const App = () => (
