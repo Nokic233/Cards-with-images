@@ -10,22 +10,31 @@ Author: Omar Faruq Tawsif (https://sketchfab.com/omarfaruqtawsif32)
 License: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 */
 
+// 提取静态样式常量，避免每次渲染创建新对象 (rendering-hoist-jsx)
+const overlayStyle = {
+  position: 'absolute',
+  pointerEvents: 'none',
+  top: 0,
+  left: 0,
+  width: '100vw',
+  height: '100vh'
+}
+
+const dateStyle = { position: 'absolute', bottom: 40, right: 40, fontSize: '13px' }
+const logoStyle = { position: 'absolute', bottom: 40, left: 40, width: 30 }
+const hintStyle = { position: 'absolute', top: 40, left: 40, fontSize: '13px' }
+
 function Root() {
   return (
     <>
       <App />
-      <div style={{ position: 'absolute', pointerEvents: 'none', top: 0, left: 0, width: '100vw', height: '100vh' }}>
-        {/* <a href="https://pmnd.rs/" style={{ position: 'absolute', bottom: 40, left: 90, fontSize: '13px' }}>
-          pmnd.rs
-          <br />
-          dev collective
-        </a> */}
-        <div style={{ position: 'absolute', bottom: 40, right: 40, fontSize: '13px' }}>27/01/2026</div>
-        <Logo style={{ position: 'absolute', bottom: 40, left: 40, width: 30 }} />
-        <a style={{ position: 'absolute', top: 40, left: 40, fontSize: '13px' }} href="#">
+      <div style={overlayStyle}>
+        <div style={dateStyle}>27/01/2026</div>
+        <Logo style={logoStyle} />
+        <a style={hintStyle} href="#">
           上下滚动试试看
         </a>
-      </div>{' '}
+      </div>
     </>
   )
 }
