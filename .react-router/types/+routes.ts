@@ -17,7 +17,7 @@ type Pages = {
   "/Cards-Circle": {
     params: {};
   };
-  "/Horizontal-tiles": {
+  "/Horizontal-Tiles": {
     params: {};
   };
 };
@@ -25,7 +25,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/Cards-Circle" | "/Horizontal-tiles";
+    page: "/" | "/Cards-Circle" | "/Horizontal-Tiles";
   };
   "routes/home.tsx": {
     id: "routes/home";
@@ -37,7 +37,7 @@ type RouteFiles = {
   };
   "routes/horizontal-tiles.tsx": {
     id: "routes/horizontal-tiles";
-    page: "/Horizontal-tiles";
+    page: "/Horizontal-Tiles";
   };
 };
 

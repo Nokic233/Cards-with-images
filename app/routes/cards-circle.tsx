@@ -3,9 +3,7 @@ import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'r
 import { Canvas, extend, useFrame, ThreeEvent } from '@react-three/fiber'
 import { Image, ScrollControls, useScroll, Billboard, Text } from '@react-three/drei'
 import { suspend } from 'suspend-react'
-import { generate } from 'random-words'
 import { easing, geometry } from 'maath'
-import { Logo } from '@pmndrs/branding'
 
 extend(geometry)
 const inter = import('@pmndrs/assets/fonts/inter_regular.woff')
@@ -52,7 +50,6 @@ export default function CardsCircle() {
       </Canvas>
       <div style={overlayStyle}>
         <div style={dateStyle}>27/01/2026</div>
-        <Logo style={logoStyle} />
         <a style={hintStyle} href="#">
           上下滚动试试看
         </a>
@@ -183,7 +180,6 @@ interface ActiveCardProps {
 
 const ActiveCard = memo(function ActiveCard({ hovered, ...props }: ActiveCardProps) {
   const ref = useRef<any>(null!)
-  const name = useMemo(() => generate({ exactly: 2 }).join(' '), [hovered !== null])
   const imageUrl = hovered ?? (images[0] as string)
 
   useLayoutEffect(() => {
