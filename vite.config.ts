@@ -5,6 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+  base: '/Cards-with-images/',
   server: {
     // 启动时自动在浏览器打开正确的路径
     open: '/Cards-with-images/'
