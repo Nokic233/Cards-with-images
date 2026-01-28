@@ -31,12 +31,12 @@ type RouteFiles = {
     id: "routes/home";
     page: "/";
   };
-  "routes/cards-circle.tsx": {
-    id: "routes/cards-circle";
+  "routes/cards-circle/route.tsx": {
+    id: "routes/cards-circle/route";
     page: "/Cards-Circle";
   };
-  "routes/horizontal-tiles.tsx": {
-    id: "routes/horizontal-tiles";
+  "routes/horizontal-tiles/route.tsx": {
+    id: "routes/horizontal-tiles/route";
     page: "/Horizontal-Tiles";
   };
 };
@@ -44,6 +44,6 @@ type RouteFiles = {
 type RouteModules = {
   "root": typeof import("./app/root.tsx");
   "routes/home": typeof import("./app/routes/home.tsx");
-  "routes/cards-circle": typeof import("./app/routes/cards-circle.tsx");
-  "routes/horizontal-tiles": typeof import("./app/routes/horizontal-tiles.tsx");
+  "routes/cards-circle/route": typeof import("./app/routes/cards-circle/route.tsx");
+  "routes/horizontal-tiles/route": typeof import("./app/routes/horizontal-tiles/route.tsx");
 };

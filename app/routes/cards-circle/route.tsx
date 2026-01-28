@@ -1,13 +1,15 @@
+import './route.css'
 import * as THREE from 'three'
 import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, ThreeEvent } from '@react-three/fiber'
 import { Image, ScrollControls, useScroll, Billboard, Text } from '@react-three/drei'
 import { suspend } from 'suspend-react'
 import { easing } from 'maath'
+import PageOverlay from '../../components/PageOverlay'
 const inter = import('@pmndrs/assets/fonts/inter_regular.woff')
 
 // 从 app/assets 动态加载所有图片
-const imageModules = import.meta.glob('../assets/*.{jpg,png}', { eager: true, query: '?url', import: 'default' })
+const imageModules = import.meta.glob('../../assets/*.{jpg,png}', { eager: true, query: '?url', import: 'default' })
 const images = Object.values(imageModules)
 
 // 提取常量到模块级别，避免每次渲染创建新对象
@@ -19,24 +21,15 @@ const SCENE_POSITION = [0, 1.5, 0]
 // 季节配置常量
 const SEASONS = [
   { category: 'spring', from: 0, len: Math.PI / 4 },
-  { category: 'summer', from: Math.PI / 4, len: Math.PI / 2, position: [0, 0.4, 0] },
+  { category: 'summer', from: Math.PI / 4, len: Math.PI / 2, position: [0, 0.4, 0] as [number, number, number] },
   { category: 'autumn', from: Math.PI / 4 + Math.PI / 2, len: Math.PI / 2 },
-  { category: 'winter', from: Math.PI * 1.25, len: Math.PI * 2 - Math.PI * 1.25, position: [0, -0.4, 0] }
+  { category: 'winter', from: Math.PI * 1.25, len: Math.PI * 2 - Math.PI * 1.25, position: [0, -0.4, 0] as [number, number, number] }
 ]
 
-// 提取静态样式常量
-const overlayStyle = {
-  position: 'absolute' as const,
-  pointerEvents: 'none' as const,
-  top: 0,
-  left: 0,
-  width: '100vw',
-  height: '100vh'
+// 路由 handle 配置，用于传递提示文案
+export const handle = {
+  hint: '上下滚动试试看'
 }
-
-const dateStyle = { position: 'absolute' as const, bottom: 40, right: 40, fontSize: '13px' }
-const logoStyle = { position: 'absolute' as const, bottom: 40, left: 40, width: 30 }
-const hintStyle = { position: 'absolute' as const, top: 40, left: 40, fontSize: '13px' }
 
 export default function CardsCircle() {
   return (
@@ -46,12 +39,7 @@ export default function CardsCircle() {
           <Scene position={SCENE_POSITION} />
         </ScrollControls>
       </Canvas>
-      <div style={overlayStyle}>
-        <div style={dateStyle}>27/01/2026</div>
-        <a style={hintStyle} href="#">
-          上下滚动试试看
-        </a>
-      </div>
+      <PageOverlay />
     </>
   )
 }
@@ -115,7 +103,7 @@ function Cards({ category, from = 0, len = Math.PI * 2, radius = 5.25, onPointer
   return (
     <group {...props}>
       <Billboard position={[Math.sin(textPosition) * radius * 1.4, 0.5, Math.cos(textPosition) * radius * 1.4]}>
-        <Text font={suspend(inter).default} fontSize={0.25} anchorX="center" color="black">
+        <Text font={(suspend(inter) as { default: string }).default} fontSize={0.25} anchorX="center" color="black">
           {category}
         </Text>
       </Billboard>

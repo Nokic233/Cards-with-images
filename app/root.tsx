@@ -6,7 +6,7 @@ import {
   ScrollRestoration,
 } from "react-router";
 import type { LinksFunction } from "react-router";
-import "./styles.css";
+import "./base.css";
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg+xml", href: `${import.meta.env.BASE_URL}favicon.svg` },

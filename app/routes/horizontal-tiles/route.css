@@ -1,0 +1,27 @@
+/* Horizontal Tiles 页面专属样式 */
+
+body {
+  overscroll-behavior: none;
+  background: #151515;
+  color: #a0a0a0;
+  font-family: 'Inter var', sans-serif;
+}
+
+h1 {
+  font-size: 30vw;
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 0.7em;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  pointer-events: all;
+  color: #a0a0a0;
+  text-decoration: none;
+}
+
+svg {
+  fill: #a0a0a0;
+}

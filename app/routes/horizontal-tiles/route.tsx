@@ -1,15 +1,14 @@
+import './route.css'
 import * as THREE from 'three'
-import { useRef, useState } from 'react'
+import { useRef, useState, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Image, ScrollControls, Scroll, useScroll } from '@react-three/drei'
+import { Image, ScrollControls, Scroll, useScroll, Line } from '@react-three/drei'
 import { proxy, useSnapshot } from 'valtio'
 import { easing } from 'maath'
-
-const material = new THREE.LineBasicMaterial({ color: 'white' })
-const geometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, -0.5, 0), new THREE.Vector3(0, 0.5, 0)])
+import PageOverlay from '../../components/PageOverlay'
 
 // 从 app/assets 动态加载所有图片
-const imageModules = import.meta.glob('../assets/*.{jpg,png}', { eager: true, query: '?url', import: 'default' })
+const imageModules = import.meta.glob('../../assets/*.{jpg,png}', { eager: true, query: '?url', import: 'default' })
 const images = Object.values(imageModules) as string[]
 
 const state = proxy({
@@ -17,13 +16,18 @@ const state = proxy({
   urls: images
 })
 
+// 路由 handle 配置，用于传递提示文案
+export const handle = {
+  hint: '左右滚动试试看'
+}
+
 function Minimap() {
-  const ref = useRef()
+  const ref = useRef<THREE.Group>(null)
   const scroll = useScroll()
   const { urls } = useSnapshot(state)
   const { height } = useThree((state) => state.viewport)
   useFrame((state, delta) => {
-    ref.current.children.forEach((child, index) => {
+    ref.current?.children.forEach((child, index) => {
       // Give me a value between 0 and 1
       //   starting at the position of my item
       //   ranging across 4 / total length
@@ -35,32 +39,41 @@ function Minimap() {
   return (
     <group ref={ref}>
       {urls.map((_, i) => (
-        <line key={i} geometry={geometry} material={material} position={[i * 0.06 - urls.length * 0.03, -height / 2 + 0.6, 0]} />
+        <Line key={i} points={[[0, -0.5, 0], [0, 0.5, 0]]} color="white" position={[i * 0.06 - urls.length * 0.03, -height / 2 + 0.6, 0]} />
       ))}
     </group>
   )
 }
 
-function Item({ index, position, scale, c = new THREE.Color(), ...props }) {
-  const ref = useRef()
+interface ItemProps {
+  index: number
+  position: [number, number, number]
+  scale: [number, number, number]
+  url: string
+}
+
+function Item({ index, position, scale, url }: ItemProps) {
+  const ref = useRef<THREE.Mesh>(null!)
   const scroll = useScroll()
   const { clicked, urls } = useSnapshot(state)
   const [hovered, hover] = useState(false)
   const click = () => (state.clicked = index === clicked ? null : index)
   const over = () => hover(true)
   const out = () => hover(false)
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
+    if (!ref.current) return
     const y = scroll.curve(index / urls.length - 1.5 / urls.length, 4 / urls.length)
     easing.damp3(ref.current.scale, [clicked === index ? 4.7 : scale[0], clicked === index ? 5 : 4 + y, 1], 0.15, delta)
-    ref.current.material.scale[0] = ref.current.scale.x
-    ref.current.material.scale[1] = ref.current.scale.y
+    const material = ref.current.material as THREE.MeshBasicMaterial & { scale: [number, number]; grayscale: number }
+    material.scale[0] = ref.current.scale.x
+    material.scale[1] = ref.current.scale.y
     if (clicked !== null && index < clicked) easing.damp(ref.current.position, 'x', position[0] - 2, 0.15, delta)
     if (clicked !== null && index > clicked) easing.damp(ref.current.position, 'x', position[0] + 2, 0.15, delta)
     if (clicked === null || clicked === index) easing.damp(ref.current.position, 'x', position[0], 0.15, delta)
-    easing.damp(ref.current.material, 'grayscale', hovered || clicked === index ? 0 : Math.max(0, 1 - y), 0.15, delta)
-    easing.dampC(ref.current.material.color, hovered || clicked === index ? 'white' : '#aaa', hovered ? 0.3 : 0.15, delta)
+    easing.damp(material, 'grayscale', hovered || clicked === index ? 0 : Math.max(0, 1 - y), 0.15, delta)
+    easing.dampC(material.color, hovered || clicked === index ? 'white' : '#aaa', hovered ? 0.3 : 0.15, delta)
   })
-  return <Image ref={ref} {...props} position={position} scale={scale} onClick={click} onPointerOver={over} onPointerOut={out} />
+  return <Image ref={ref} url={url} position={position} scale={scale} onClick={click} onPointerOver={over} onPointerOut={out} />
 }
 
 function Items({ w = 0.7, gap = 0.15 }) {
@@ -79,8 +92,11 @@ function Items({ w = 0.7, gap = 0.15 }) {
 
 export default function HorizontalTiles() {
   return (
-    <Canvas gl={{ antialias: false }} dpr={[1, 1.5]} onPointerMissed={() => (state.clicked = null)}>
-      <Items />
-    </Canvas>
+    <>
+      <Canvas gl={{ antialias: false }} dpr={[1, 1.5]} onPointerMissed={() => (state.clicked = null)}>
+        <Items />
+      </Canvas>
+      <PageOverlay />
+    </>
   )
 }
