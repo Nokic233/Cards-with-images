@@ -1,11 +1,9 @@
 import * as THREE from 'three'
 import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Canvas, extend, useFrame, ThreeEvent } from '@react-three/fiber'
+import { Canvas, useFrame, ThreeEvent } from '@react-three/fiber'
 import { Image, ScrollControls, useScroll, Billboard, Text } from '@react-three/drei'
 import { suspend } from 'suspend-react'
-import { easing, geometry } from 'maath'
-
-extend(geometry)
+import { easing } from 'maath'
 const inter = import('@pmndrs/assets/fonts/inter_regular.woff')
 
 // 从 app/assets 动态加载所有图片
